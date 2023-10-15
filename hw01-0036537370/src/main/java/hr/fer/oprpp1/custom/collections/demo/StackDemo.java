@@ -2,6 +2,8 @@ package hr.fer.oprpp1.custom.collections.demo;
 
 import hr.fer.oprpp1.custom.collections.ObjectStack;
 
+import java.util.EmptyStackException;
+
 /**
  * Class representing the stack demo usage example.
  */
@@ -13,7 +15,7 @@ public class StackDemo {
      */
     public static void main(String[] args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("Only one argument should be provided!");
+            throw new IllegalArgumentException("One argument should be provided!");
         }
 
         String[] tokens = args[0].split("\\s+");
@@ -25,17 +27,22 @@ public class StackDemo {
                 int value = Integer.parseInt(token);
                 stack.push(value);
             } catch (NumberFormatException e) {
-                int op2 = (int) stack.pop();
-                int op1 = (int) stack.pop();
+                try {
+                    int op2 = (int) stack.pop();
+                    int op1 = (int) stack.pop();
 
-                stack.push(StackDemo.performOperation(op1, op2, token));
+                    stack.push(StackDemo.performOperation(op1, op2, token));
+                } catch (EmptyStackException e1) {
+                    System.out.println("Expression is invalid.");
+                    System.exit(0);
+                }
             }
         }
 
         if (stack.size() != 1) {
             System.out.println("Error parsing the input string!");
         } else {
-            System.out.println("Expression evaluates to " + stack.pop());
+            System.out.println("Expression evaluates to " + stack.pop() + ".");
         }
     }
 
@@ -56,19 +63,19 @@ public class StackDemo {
                 return op1 * op2;
             case "/":
                 if (op2 == 0) {
-                    System.out.println("Division by zero");
+                    System.out.println("Division by zero.");
                     System.exit(0);
                 }
 
                 return op1 / op2;
             case "%":
                 if (op2 == 0) {
-                    System.out.println("Modulo by zero");
+                    System.out.println("Modulo by zero.");
                     System.exit(0);
                 }
                 return op1 % op2;
             default:
-                System.out.println("Unsupported operator: " + op);
+                System.out.println("Unsupported operator: " + op + ".");
                 System.exit(0);
                 return -1;
         }

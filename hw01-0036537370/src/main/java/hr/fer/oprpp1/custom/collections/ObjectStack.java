@@ -1,5 +1,7 @@
 package hr.fer.oprpp1.custom.collections;
 
+import java.util.EmptyStackException;
+
 /**
  * Adaptor class that adapts ArrayIndexedCollection to be a stack-like collection.
  */
@@ -39,6 +41,10 @@ public class ObjectStack {
      * @return Element on the top of the stack
      */
     public Object pop() {
+        if (array.size() == 0) {
+            throw new EmptyStackException();
+        }
+
         Object temp = array.get(array.size() - 1);
         array.remove(array.size() - 1);
 
