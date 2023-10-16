@@ -31,6 +31,10 @@ public class ObjectStack {
      * @param value Value to be added
      */
     public void push(Object value) {
+        if (value == null) {
+            throw new NullPointerException("Value cant be null!");
+        }
+
         array.add(value);
     }
 
@@ -54,6 +58,10 @@ public class ObjectStack {
      * @return Element on the top of the stack
      */
     public Object peek() {
+        if (array.size() == 0) {
+            throw new EmptyStackException();
+        }
+
         return array.get(array.size() - 1);
     }
 
