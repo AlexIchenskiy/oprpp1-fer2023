@@ -1,7 +1,5 @@
 package hr.fer.oprpp1.custom.collections;
 
-import java.util.EmptyStackException;
-
 /**
  * Adaptor class that adapts ArrayIndexedCollection to be a stack-like collection.
  */
