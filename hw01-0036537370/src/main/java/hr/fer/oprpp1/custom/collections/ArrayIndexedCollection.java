@@ -129,14 +129,14 @@ public class ArrayIndexedCollection extends Collection {
 	public boolean remove(Object value) {
 		boolean isPassed = false;
 
-		for (int i = 0; i < this.size - 1; i++) {
-			if (this.elements[i].equals(value)) {
+		for (int i = 0; i < this.size; i++) {
+			if (this.elements[i].equals(value) && !isPassed) {
 				isPassed = true;
 				this.size--;
 			}
 
 			if (isPassed) {
-				if (i == this.size - 1) {
+				if (i == this.size) {
 					this.elements[i] = null;
 					continue;
 				}
