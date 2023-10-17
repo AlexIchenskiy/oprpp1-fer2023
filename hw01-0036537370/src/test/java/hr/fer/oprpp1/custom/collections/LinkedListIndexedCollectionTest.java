@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LinkedListIndexedCollectionTest extends Collection {
+public class LinkedListIndexedCollectionTest {
 
     private LinkedListIndexedCollection llic;
     private LinkedListIndexedCollection llicFilled;
