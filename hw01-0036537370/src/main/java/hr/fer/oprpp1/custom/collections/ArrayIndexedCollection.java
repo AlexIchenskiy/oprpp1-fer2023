@@ -212,6 +212,11 @@ public class ArrayIndexedCollection extends Collection {
 		if (value == null) {
 			throw new NullPointerException("Value cant be null");
 		}
+		
+		if (position == this.size) {
+			this.add(value);
+			return;
+		}
 
 		Object[] temp = new Object[this.elements.length];
 		for (int i = 0; i < this.elements.length; i++) {
