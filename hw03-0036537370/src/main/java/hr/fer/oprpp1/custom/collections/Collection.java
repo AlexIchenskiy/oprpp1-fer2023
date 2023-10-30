@@ -99,8 +99,8 @@ public interface Collection<T> {
 	 * @param col Collection to be checked and added
 	 * @param tester Tester to be used
 	 */
-	default void addAllSatisfying(Collection<T> col, Tester tester) {
-		ElementsGetter<T> eg = col.createElementsGetter();
+	default void addAllSatisfying(Collection<? extends T> col, Tester<? super T> tester) {
+		ElementsGetter<? extends T> eg = col.createElementsGetter();
 
 		while (eg.hasNextElement()) {
 			T val = eg.getNextElement();
