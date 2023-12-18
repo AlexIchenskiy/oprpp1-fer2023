@@ -50,7 +50,11 @@ public class NewtonParallel {
                         "once!");
                 isWorkersPresent = true;
                 try {
-                    workers = Integer.parseInt(args[i].split("=")[1]);
+                    if (args[i].toLowerCase().startsWith("--workers")) {
+                        workers = Integer.parseInt(args[i].split("=")[1]);
+                    } else {
+                        workers = Integer.parseInt(args[++i]);
+                    }
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Invalid workers number!");
                 }
@@ -61,7 +65,11 @@ public class NewtonParallel {
                         "once!");
                 isTracksPresent = true;
                 try {
-                    tracks = Integer.parseInt(args[i].split("=")[1]);
+                    if (args[i].toLowerCase().startsWith("--tracks")) {
+                        tracks = Integer.parseInt(args[i].split("=")[1]);
+                    } else {
+                        tracks = Integer.parseInt(args[++i]);
+                    }
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Invalid tracks number!");
                 }
