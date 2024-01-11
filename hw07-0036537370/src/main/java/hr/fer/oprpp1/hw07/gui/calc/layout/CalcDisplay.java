@@ -20,7 +20,9 @@ public class CalcDisplay extends JLabel {
         this.setHorizontalAlignment(SwingConstants.RIGHT);
         this.setVerticalAlignment(SwingConstants.CENTER);
         this.setOpaque(true);
-        setBackground(Color.decode("#FFFF00"));
+        this.setBackground(Color.white);
+        this.setFont(this.getFont().deriveFont(24f));
+        this.setBorder(BorderFactory.createLineBorder(Color.decode("#231F20"), 2));
     }
 
 }

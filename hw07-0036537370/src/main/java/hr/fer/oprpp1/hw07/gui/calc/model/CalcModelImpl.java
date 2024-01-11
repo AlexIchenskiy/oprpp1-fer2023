@@ -78,6 +78,15 @@ public class CalcModelImpl implements CalcModel {
     }
 
     /**
+     * Getter for user input.
+     * @return Returns the current user input value
+     */
+    public String getUserInput() {
+        if (this.userInput.isBlank()) return "0";
+        return this.positive ? this.userInput : "-" + this.userInput;
+    }
+
+    /**
      * Vraća trenutnu vrijednost koja je pohranjena u kalkulatoru.
      *
      * @return vrijednost pohranjena u kalkulatoru
@@ -170,11 +179,12 @@ public class CalcModelImpl implements CalcModel {
         if (this.userInput.isEmpty()) throw new CalculatorInputException("Cant insert decimal point to an empty " +
                 "value!");
 
-        this.userInput = this.userInput.isBlank() ? "0." : this.userInput + ".";
+        String temp = this.userInput.isBlank() ? "0." : this.userInput + ".";
         this.frozenInput = null;
 
         try {
-            this.inputValue = Double.parseDouble(this.userInput);
+            this.userInput = temp;
+            this.inputValue = Double.parseDouble(temp);
         } catch (Exception e) {
             throw new CalculatorInputException("New value must be parsable to double!");
         }
@@ -196,12 +206,12 @@ public class CalcModelImpl implements CalcModel {
         if (!this.editable) throw new CalculatorInputException("Cant input digits while calculator is not editable!");
         if (this.userInput.equals("0") && digit == 0) return;
 
-        if (this.userInput.equals("0")) this.userInput = "";
-        this.userInput += digit;
+        String temp = this.userInput.equals("0") ? "" + digit : this.userInput + digit;
         this.frozenInput = null;
 
         try {
-            this.inputValue = Double.parseDouble(this.userInput);
+            this.userInput = temp;
+            this.inputValue = Double.parseDouble(temp);
 
             if (Double.isInfinite(this.inputValue)) throw new CalculatorInputException("Number cant be that big!");
         } catch (NumberFormatException e) {

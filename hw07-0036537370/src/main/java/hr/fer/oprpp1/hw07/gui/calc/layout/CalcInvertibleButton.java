@@ -3,6 +3,7 @@ package hr.fer.oprpp1.hw07.gui.calc.layout;
 import hr.fer.oprpp1.hw07.gui.calc.model.CalcModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
@@ -53,6 +54,11 @@ public class CalcInvertibleButton extends JButton {
         this.actionListener = actionListener;
         this.invertedActionListener = invertedActionListener;
 
+        this.setOpaque(true);
+        this.setBackground(Color.white);
+        this.setFont(this.getFont().deriveFont(12f));
+        this.setBorder(BorderFactory.createLineBorder(Color.decode("#231f20"), 2));
+
         this.addActionListener(actionListener);
     }
 
@@ -83,6 +89,15 @@ public class CalcInvertibleButton extends JButton {
         this.setText(text);
     }
 
+    /**
+     * Creates a single invertible unary operation button.
+     * @param text Regular text
+     * @param operation Regular unary operation
+     * @param invertedText Inverted text
+     * @param invertedOperation Inverted unary operation
+     * @param calcModel Calculator logic model
+     * @return A single invertible unary operation button
+     */
     public static CalcInvertibleButton createInvertibleButton(String text, DoubleUnaryOperator operation,
                                                               String invertedText,
                                                               DoubleUnaryOperator invertedOperation,
@@ -96,6 +111,15 @@ public class CalcInvertibleButton extends JButton {
         });
     }
 
+    /**
+     * Creates a single invertible binary operation button.
+     * @param text Regular text
+     * @param operation Regular binary operation
+     * @param invertedText Inverted text
+     * @param invertedOperation Inverted binary operation
+     * @param calcModel Calculator logic model
+     * @return A single invertible binary operation button
+     */
     public static CalcInvertibleButton createInvertibleButton(String text, DoubleBinaryOperator operation,
                                                               String invertedText,
                                                               DoubleBinaryOperator invertedOperation,
@@ -107,26 +131,31 @@ public class CalcInvertibleButton extends JButton {
         });
     }
 
-    private static void performBinaryOperation(DoubleBinaryOperator operation, CalcModel calcModel) {
+    /**
+     * A static function for performing a binary operation on the calculator logic model.
+     * @param operation Binary operation to be performed
+     * @param calcModel Calculator logic model
+     */
+    public static void performBinaryOperation(DoubleBinaryOperator operation, CalcModel calcModel) {
         if (calcModel.hasFrozenValue()) {
             calcModel.setPendingBinaryOperation(operation);
             return;
         }
 
-        if (calcModel.getPendingBinaryOperation() != null) {
+        if (calcModel.getPendingBinaryOperation() != null && calcModel.isActiveOperandSet()) {
             double temp = calcModel.getPendingBinaryOperation().applyAsDouble(
                     calcModel.getActiveOperand(), calcModel.getValue()
             );
             calcModel.setValue(temp);
+            calcModel.freezeValue("" + temp);
             calcModel.setActiveOperand(temp);
             calcModel.setPendingBinaryOperation(operation);
-            calcModel.freezeValue("" + calcModel.getValue());
             return;
         }
 
-        calcModel.setPendingBinaryOperation(operation);
+        calcModel.freezeValue("" + calcModel.getUserInput());
         calcModel.setActiveOperand(calcModel.getValue());
-        calcModel.freezeValue("" + calcModel.getValue());
+        calcModel.setPendingBinaryOperation(operation);
     }
 
 }

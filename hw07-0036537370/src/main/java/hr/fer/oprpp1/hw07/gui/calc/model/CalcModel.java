@@ -36,6 +36,13 @@ public interface CalcModel {
 	 * @return tekst za prikaz na zaslonu kalkulatora
 	 */
 	String toString();
+
+	/**
+	 * Vraća trenutnu unesenu vrijednost koja je pohranjena u kalkulatoru.
+	 *
+	 * @return vrijednost pohranjena u kalkulatoru
+	 */
+	String getUserInput();
 	
 	/**
 	 * Vraća trenutnu vrijednost koja je pohranjena u kalkulatoru.
