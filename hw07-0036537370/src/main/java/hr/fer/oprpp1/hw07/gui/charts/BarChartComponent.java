@@ -17,8 +17,14 @@ public class BarChartComponent extends JComponent {
      */
     private final BarChart chart;
 
+    /**
+     * Bar chart block offset.
+     */
     private final int blockOffset = 40;
 
+    /**
+     * Bar chart offset for arrows and X, Y axes.
+     */
     private final int chartOffset = 5;
 
     /**
@@ -75,6 +81,13 @@ public class BarChartComponent extends JComponent {
         this.setVisible(true);
     }
 
+    /**
+     * Function for bar chart axes initialization.
+     * @param g2d Graphics 2d
+     * @param width Available chart width
+     * @param height Available chart height
+     * @param fontMetrics Swing font metrics
+     */
     private void initAxes(Graphics2D g2d, int width, int height, FontMetrics fontMetrics) {
         g2d.setColor(Color.decode("#231F20"));
 
@@ -125,6 +138,12 @@ public class BarChartComponent extends JComponent {
         g2d.setTransform(old);
     }
 
+    /**
+     * Function for bar chart grid initialization.
+     * @param g2d Graphics 2d
+     * @param width Available chart width
+     * @param height Available chart height
+     */
     private void initGrid(Graphics2D g2d, int width, int height) {
         List<Integer> xPoints = this.getXPoints(width);
         List<Integer> yPoints = this.getYPoints(height);
@@ -140,6 +159,12 @@ public class BarChartComponent extends JComponent {
         }
     }
 
+    /**
+     * Function for bar chart bars initialization.
+     * @param g2d Graphics 2d
+     * @param width Available chart width
+     * @param height Available chart height
+     */
     private void initBars(Graphics2D g2d, int width, int height) {
         List<Integer> xPoints = this.getXPoints(width);
 
@@ -168,6 +193,14 @@ public class BarChartComponent extends JComponent {
         }
     }
 
+    /**
+     * Function for arrowheads initialization.
+     * @param g2d Graphics 2d
+     * @param x X coordinate of the arrowhead
+     * @param y Y coordinate of the arrowhead
+     * @param size Arrowhead size
+     * @param rotate If rotate is 0, arrowhead is heading right
+     */
     private void drawArrowHead(Graphics2D g2d, int x, int y, int size, double rotate) {
         if (rotate == 0) {
             int[] xPoints = {x - size, x, x - size};
@@ -181,6 +214,11 @@ public class BarChartComponent extends JComponent {
         g2d.fillPolygon(xPoints, yPoints, 3);
     }
 
+    /**
+     * Returns X points for the chart grid.
+     * @param width Available chart width
+     * @return X points for the chart grid
+     */
     private List<Integer> getXPoints(int width) {
         List<Integer> xPoints = new ArrayList<>();
 
@@ -194,6 +232,11 @@ public class BarChartComponent extends JComponent {
         return xPoints;
     }
 
+    /**
+     * Returns Y points for the chart grid.
+     * @param height Available chart height
+     * @return Y points for the chart grid
+     */
     private List<Integer> getYPoints(int height) {
         List<Integer> yPoints = new ArrayList<>();
 

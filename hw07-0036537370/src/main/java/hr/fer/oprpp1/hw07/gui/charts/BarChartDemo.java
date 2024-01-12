@@ -13,8 +13,15 @@ import java.util.List;
  */
 public class BarChartDemo extends JFrame {
 
+    /**
+     * Bar chart data.
+     */
     private final BarChart chart;
 
+    /**
+     * Creates a bar chart GUI from a file path.
+     * @param filePath File path for the data file
+     */
     public BarChartDemo(String filePath) {
         super();
         this.chart = this.readDataFromFile(filePath);
@@ -26,6 +33,11 @@ public class BarChartDemo extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Function to create the bar chart model from a file path.
+     * @param filePath File path for the data file
+     * @return Bar chart data model
+     */
     private BarChart readDataFromFile(String filePath) {
         List<XYValue> xyValues = new ArrayList<>();
 
@@ -55,6 +67,10 @@ public class BarChartDemo extends JFrame {
         return new BarChart(xyValues, xAxisText, yAxisText, minY, maxY, offsetY);
     }
 
+    /**
+     * Function for GUI initialization.
+     * @param path File path for data file
+     */
     private void initGUI(String path) {
         Container cp = this.getContentPane();
 
@@ -64,6 +80,10 @@ public class BarChartDemo extends JFrame {
         cp.add(new BarChartComponent(this.chart), BorderLayout.CENTER);
     }
 
+    /**
+     * Main function for bar chart GUI initialization.
+     * @param args No arguments needed
+     */
     public static void main(String[] args) {
         if (args.length != 1) throw new IllegalArgumentException("One argument must be provided!");
 
