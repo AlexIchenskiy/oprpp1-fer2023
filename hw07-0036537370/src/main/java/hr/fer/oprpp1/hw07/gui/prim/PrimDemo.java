@@ -30,15 +30,15 @@ public class PrimDemo extends JFrame {
 
         PrimListModel primListModel = new PrimListModel();
 
-        JPanel panel = new JPanel(new BorderLayout());
+        Box verticalBox = Box.createVerticalBox();
 
-        panel.add(new JScrollPane(new JList<>(primListModel)), BorderLayout.NORTH);
-        panel.add(new JScrollPane(new JList<>(primListModel)), BorderLayout.SOUTH);
+        verticalBox.add(new JScrollPane(new JList<>(primListModel)), BorderLayout.PAGE_START);
+        verticalBox.add(new JScrollPane(new JList<>(primListModel)), BorderLayout.PAGE_END);
 
         JButton button = new JButton("Sljedeći!");
 
-        cp.add(panel, BorderLayout.NORTH);
-        cp.add(button, BorderLayout.SOUTH);
+        cp.add(verticalBox, BorderLayout.CENTER);
+        cp.add(button, BorderLayout.PAGE_END);
 
         button.addActionListener(e -> primListModel.next());
     }
