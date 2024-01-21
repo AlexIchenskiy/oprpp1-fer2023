@@ -1,13 +1,20 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.model.impl;
 
+import hr.fer.oprpp1.hw08.jnotepadpp.JNotepadPP;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadTextArea;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.util.JNotepadIcon;
+import jdk.jshell.execution.Util;
 
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.Element;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.Utilities;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,14 +36,18 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 
     private final ImageIcon greenSaveIcon;
 
+    private final JNotepadPP notepad;
+
     /**
      * Creates an empty <code>TabbedPane</code> with a default
      * tab placement of <code>JTabbedPane.TOP</code>.
      *
      * @see #addTab
      */
-    public DefaultMultipleDocumentModel() {
+    public DefaultMultipleDocumentModel(JNotepadPP notepad) {
         super();
+
+        this.notepad = notepad;
 
         this.documents = new ArrayList<>();
         this.document = null;
@@ -53,6 +64,13 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
                 if (index < 0 || index >= this.documents.size()) return;
                 this.document = this.documents.get(this.getSelectedIndex());
 
+                this.document.getTextComponent().addCaretListener(new CaretListener() {
+                    @Override
+                    public void caretUpdate(CaretEvent e) {
+                        handleCaretChange(e.getDot(), e.getMark());
+                    }
+                });
+
                 this.notifyListeners(listener ->
                         listener.currentDocumentChanged(previousModel, this.getCurrentDocument()));
             } catch (ArrayIndexOutOfBoundsException ignored) {}
@@ -66,7 +84,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 
     @Override
     public SingleDocumentModel createNewDocument() {
-        SingleDocumentModel model = new DefaultSingleDocumentModel(null, "");
+        SingleDocumentModel model = new DefaultSingleDocumentModel(null, "", this.notepad);
         SingleDocumentModel previousModel = this.getCurrentDocument();
 
         this.documents.add(model);
@@ -76,6 +94,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         this.setSelectedIndex(index);
         this.setToolTipTextAt(index, "(unnamed)");
         this.setIconAt(index, greenSaveIcon);
+        this.handleCaretChange(-1, -1);
 
         this.notifyListeners(listener -> listener.currentDocumentChanged(previousModel, model));
         this.getCurrentDocument().addSingleDocumentListener(this.initDocumentListener());
@@ -103,7 +122,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
             byte[] bytes = Files.readAllBytes(path);
             String data = new String(bytes, StandardCharsets.UTF_8);
 
-            DefaultSingleDocumentModel model = new DefaultSingleDocumentModel(path, data);
+            DefaultSingleDocumentModel model = new DefaultSingleDocumentModel(path, data, this.notepad);
 
             this.documents.add(model);
             this.addTab(path.getFileName().toString(), new JNotepadTextArea(model.getTextComponent()));
@@ -112,6 +131,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
             this.setSelectedIndex(index);
             this.setToolTipTextAt(index, path.getFileName().toString());
             this.setIconAt(index, greenSaveIcon);
+            this.handleCaretChange(-1, -1);
 
             this.notifyListeners(listener -> listener.documentAdded(this.getCurrentDocument()));
             this.notifyListeners(listener -> listener.currentDocumentChanged(previousModel, this.getCurrentDocument()));
@@ -218,8 +238,34 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
             }
 
             @Override
-            public void documentFilePathUpdated(SingleDocumentModel model) {}
+            public void documentFilePathUpdated(SingleDocumentModel model) {
+                int index = documents.indexOf(model);
+
+                setTitleAt(index,
+                        model.getFilePath() == null ? "(unnamed)" : model.getFilePath().getFileName().toString());
+                setToolTipTextAt(index, model.getFilePath() == null ? "(unnamed)" : model.getFilePath().toString());
+            }
         };
+    }
+
+    private void handleCaretChange(int dot, int mark) {
+        JTextComponent textComponent = this.document.getTextComponent();
+        try {
+            if (dot > 0 && mark > 0) {
+                int pos = textComponent.getCaretPosition();
+                Element root = textComponent.getDocument().getDefaultRootElement();
+                int line = root.getElementIndex(pos);
+                this.notepad.getStatusbar().setLine(line + 1);
+                this.notepad.getStatusbar().setColumn(1 + pos - root.getElement(line).getStartOffset());
+            } else {
+                this.notepad.getStatusbar().setLine(1);
+                this.notepad.getStatusbar().setColumn(1);
+            }
+        } catch (Exception e) {
+            this.notepad.getStatusbar().setLine(1);
+            this.notepad.getStatusbar().setColumn(1);
+        }
+        this.notepad.getStatusbar().setSelection(Math.abs(mark - dot));
     }
 
     private void notifyListeners(Consumer<MultipleDocumentListener> consumer) {

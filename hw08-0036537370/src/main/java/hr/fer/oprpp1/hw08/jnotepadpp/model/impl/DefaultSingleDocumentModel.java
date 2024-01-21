@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.model.impl;
 
-import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentListener;
+import hr.fer.oprpp1.hw08.jnotepadpp.JNotepadPP;
+import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadStatusbar;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 
@@ -25,7 +26,7 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
 
     private final List<SingleDocumentListener> listeners;
 
-    public DefaultSingleDocumentModel(Path filePath, String textContent) {
+    public DefaultSingleDocumentModel(Path filePath, String textContent, JNotepadPP notepad) {
         this.filePath = filePath;
         this.textContent = textContent;
 
@@ -36,16 +37,23 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
         this.textComponent.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                setModified(true);
+                this.handleChange();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                setModified(true);
+                this.handleChange();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
+                this.handleChange();
+            }
+
+            private void handleChange() {
+                notepad.getStatusbar().setLength(
+                        getTextComponent() == null ? 0 : getTextComponent().getText().length()
+                );
                 setModified(true);
             }
         });

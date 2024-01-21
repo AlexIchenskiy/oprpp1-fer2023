@@ -27,6 +27,9 @@ public class MultipleDocumentListenerImpl implements MultipleDocumentListener {
         title += this.frame.getTitle();
 
         this.frame.setTitle(title);
+        this.frame.getStatusbar().setLength(
+                currentModel == null ? 0 : currentModel.getTextComponent().getText().length()
+        );
     }
 
     @Override

@@ -2,6 +2,7 @@ package hr.fer.oprpp1.hw08.jnotepadpp;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.*;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadMenu;
+import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadStatusbar;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadToolbar;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.impl.DefaultMultipleDocumentModel;
@@ -28,6 +29,8 @@ public class JNotepadPP extends JFrame {
 
     private final String title = "JNotepad++";
 
+    private final JNotepadStatusbar statusbar = new JNotepadStatusbar();
+
     /**
      * Constructs a new frame that is initially invisible.
      * <p>
@@ -42,7 +45,7 @@ public class JNotepadPP extends JFrame {
      * @see JComponent#getDefaultLocale
      */
     public JNotepadPP() throws HeadlessException {
-        this.multipleDocumentModel = new DefaultMultipleDocumentModel();
+        this.multipleDocumentModel = new DefaultMultipleDocumentModel(this);
 
         this.initActions();
         this.initGUI();
@@ -86,6 +89,7 @@ public class JNotepadPP extends JFrame {
 
         this.setJMenuBar(new JNotepadMenu(actions));
         this.getContentPane().add(new JNotepadToolbar(actions), BorderLayout.PAGE_START);
+        this.getContentPane().add(statusbar, BorderLayout.PAGE_END);
     }
 
     private void initListeners() {
@@ -133,6 +137,10 @@ public class JNotepadPP extends JFrame {
     @Override
     public String getTitle() {
         return title;
+    }
+
+    public JNotepadStatusbar getStatusbar() {
+        return statusbar;
     }
 
     public static void main(String[] args) {
