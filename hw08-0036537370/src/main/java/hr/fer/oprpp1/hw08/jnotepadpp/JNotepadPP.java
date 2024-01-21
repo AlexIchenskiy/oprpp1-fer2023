@@ -2,8 +2,10 @@ package hr.fer.oprpp1.hw08.jnotepadpp;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.*;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadMenu;
+import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadToolbar;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.impl.DefaultMultipleDocumentModel;
+import hr.fer.oprpp1.hw08.jnotepadpp.model.impl.MultipleDocumentListenerImpl;
 import hr.fer.oprpp1.hw08.jnotepadpp.util.JNotepadUserInteraction;
 
 import javax.swing.*;
@@ -11,8 +13,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Implementation of the custom text editor GUI.
@@ -21,9 +24,9 @@ public class JNotepadPP extends JFrame {
 
     private final DefaultMultipleDocumentModel multipleDocumentModel;
 
-    private List<Action> fileActions;
+    private final Map<String, List<Action>> actions = new TreeMap<>();
 
-    private List<Action> toolsActions;
+    private final String title = "JNotepad++";
 
     /**
      * Constructs a new frame that is initially invisible.
@@ -43,6 +46,7 @@ public class JNotepadPP extends JFrame {
 
         this.initActions();
         this.initGUI();
+        this.initListeners();
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -53,34 +57,39 @@ public class JNotepadPP extends JFrame {
     }
 
     private void initActions() {
-        this.fileActions = List.of(
+        this.actions.put("File", List.of(
                 new CreateFileAction(this.multipleDocumentModel, "control N", KeyEvent.VK_N),
                 new OpenFileAction(this.multipleDocumentModel, "control O", KeyEvent.VK_O),
                 new SaveFileAction(this.multipleDocumentModel, "control S", KeyEvent.VK_S),
                 new SaveFileAsAction(this.multipleDocumentModel, "control A", KeyEvent.VK_A),
                 new CloseFileAction(this.multipleDocumentModel, "control W", KeyEvent.VK_W)
-        );
+        ));
 
-        this.toolsActions = List.of(
+        this.actions.put("Tools", List.of(
                 new CopyTextAction(this.multipleDocumentModel, "control C", KeyEvent.VK_C),
                 new PasteTextAction(this.multipleDocumentModel, "control V", KeyEvent.VK_V),
                 new CutTextAction(this.multipleDocumentModel, "control X", KeyEvent.VK_X),
                 new StatisticsAction(this.multipleDocumentModel, "control I", KeyEvent.VK_I)
-        );
+        ));
     }
 
     private void initGUI() {
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.setLocation(0, 0);
         this.setSize(600, 600);
-        this.setTitle("JNotepad++");
+        this.setTitle(title);
 
         Container cp = this.getContentPane();
 
         cp.setLayout(new BorderLayout());
         cp.add(this.multipleDocumentModel, BorderLayout.CENTER);
 
-        this.setJMenuBar(new JNotepadMenu(fileActions, toolsActions));
+        this.setJMenuBar(new JNotepadMenu(actions));
+        this.getContentPane().add(new JNotepadToolbar(actions), BorderLayout.PAGE_START);
+    }
+
+    private void initListeners() {
+        this.multipleDocumentModel.addMultipleDocumentListener(new MultipleDocumentListenerImpl(this));
     }
 
     private void handleClose() {
@@ -115,8 +124,15 @@ public class JNotepadPP extends JFrame {
                     case JOptionPane.CANCEL_OPTION:
                         return;
                 }
+            } else {
+                this.multipleDocumentModel.closeDocument(model);
             }
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 
     public static void main(String[] args) {

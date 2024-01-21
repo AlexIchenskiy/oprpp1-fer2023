@@ -2,12 +2,14 @@ package hr.fer.oprpp1.hw08.jnotepadpp.components;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.Map;
 
 public class JNotepadMenu extends JMenuBar {
 
-    public JNotepadMenu(List<Action> fileActions, List<Action> toolsActions) {
-        this.initMenu("File", fileActions);
-        this.initMenu("Tools", toolsActions);
+    public JNotepadMenu(Map<String, List<Action>> actions) {
+        for (Map.Entry<String, List<Action>> entry : actions.entrySet()) {
+            this.initMenu(entry.getKey(), entry.getValue());
+        }
     }
 
     private void initMenu(String title, List<Action> actions) {

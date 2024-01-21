@@ -3,12 +3,11 @@ package hr.fer.oprpp1.hw08.jnotepadpp.model.impl;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadTextArea;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
+import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
+import hr.fer.oprpp1.hw08.jnotepadpp.util.JNotepadIcon;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class DefaultMultipleDocumentModel extends JTabbedPane implements MultipleDocumentModel {
 
@@ -24,6 +24,10 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
     private SingleDocumentModel document;
 
     private final List<MultipleDocumentListener> listeners;
+
+    private final ImageIcon redSaveIcon;
+
+    private final ImageIcon greenSaveIcon;
 
     /**
      * Creates an empty <code>TabbedPane</code> with a default
@@ -38,12 +42,19 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         this.document = null;
         this.listeners = new ArrayList<>();
 
+        this.redSaveIcon = JNotepadIcon.createSingleIcon("../../icons/save-red.png", this);
+        this.greenSaveIcon = JNotepadIcon.createSingleIcon("../../icons/save-green.png", this);
+
         this.addChangeListener(e -> {
             try {
+                SingleDocumentModel previousModel = this.getCurrentDocument();
+
                 int index = this.getSelectedIndex();
                 if (index < 0 || index >= this.documents.size()) return;
                 this.document = this.documents.get(this.getSelectedIndex());
-                this.notifyListeners();
+
+                this.notifyListeners(listener ->
+                        listener.currentDocumentChanged(previousModel, this.getCurrentDocument()));
             } catch (ArrayIndexOutOfBoundsException ignored) {}
         });
     }
@@ -56,10 +67,18 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
     @Override
     public SingleDocumentModel createNewDocument() {
         SingleDocumentModel model = new DefaultSingleDocumentModel(null, "");
+        SingleDocumentModel previousModel = this.getCurrentDocument();
 
         this.documents.add(model);
         this.addTab("(unnamed)", new JNotepadTextArea(model.getTextComponent()));
-        this.setSelectedIndex(this.documents.size() - 1);
+
+        int index = this.documents.size() - 1;
+        this.setSelectedIndex(index);
+        this.setToolTipTextAt(index, "(unnamed)");
+        this.setIconAt(index, greenSaveIcon);
+
+        this.notifyListeners(listener -> listener.currentDocumentChanged(previousModel, model));
+        this.getCurrentDocument().addSingleDocumentListener(this.initDocumentListener());
 
         return model;
     }
@@ -72,6 +91,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
     @Override
     public SingleDocumentModel loadDocument(Path path) {
         SingleDocumentModel existingModel = findForPath(path);
+        SingleDocumentModel previousModel = this.getCurrentDocument();
 
         if (existingModel != null) {
             int index = this.documents.indexOf(existingModel);
@@ -87,7 +107,16 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 
             this.documents.add(model);
             this.addTab(path.getFileName().toString(), new JNotepadTextArea(model.getTextComponent()));
-            this.setSelectedIndex(this.documents.size() - 1);
+
+            int index = this.documents.size() - 1;
+            this.setSelectedIndex(index);
+            this.setToolTipTextAt(index, path.getFileName().toString());
+            this.setIconAt(index, greenSaveIcon);
+
+            this.notifyListeners(listener -> listener.documentAdded(this.getCurrentDocument()));
+            this.notifyListeners(listener -> listener.currentDocumentChanged(previousModel, this.getCurrentDocument()));
+
+            model.addSingleDocumentListener(this.initDocumentListener());
 
             return model;
         } catch (Exception e) {
@@ -104,9 +133,16 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
             Files.writeString(newPath, data);
 
             model.setFilePath(newPath);
-            this.setTitleAt(this.documents.indexOf(model), model.getFilePath().getFileName().toString());
+            int index = this.documents.indexOf(model);
+            String fileName = model.getFilePath().getFileName().toString();
 
-            this.notifyListeners();
+            this.setTitleAt(index, fileName);
+            this.setToolTipTextAt(index, fileName);
+            this.setIconAt(index, greenSaveIcon);
+
+            model.setModified(false);
+
+            this.notifyListeners(listener -> listener.currentDocumentChanged(model, this.getCurrentDocument()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,11 +157,12 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         int index = this.documents.indexOf(model);
 
         this.removeTabAt(index);
-        this.documents.remove(model);
+        if (!this.documents.remove(model)) return;
 
         this.document = this.documents.isEmpty() ? null : this.documents.get(this.documents.size() - 1);
 
-        this.notifyListeners();
+        this.notifyListeners(listener -> listener.documentRemoved(model));
+        this.notifyListeners(listener -> listener.currentDocumentChanged(model, this.getCurrentDocument()));
     }
 
     @Override
@@ -168,10 +205,25 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         return this.documents.iterator();
     }
 
-    private void notifyListeners() {
-        for (MultipleDocumentListener listener : this.listeners) {
-            listener.notify();
-        }
+    private SingleDocumentListener initDocumentListener() {
+        return new SingleDocumentListener() {
+            @Override
+            public void documentModifyStatusUpdated(SingleDocumentModel model) {
+                int index = documents.indexOf(model);
+                if (model.isModified()) {
+                    setIconAt(index, redSaveIcon);
+                } else {
+                    setIconAt(index, greenSaveIcon);
+                }
+            }
+
+            @Override
+            public void documentFilePathUpdated(SingleDocumentModel model) {}
+        };
+    }
+
+    private void notifyListeners(Consumer<MultipleDocumentListener> consumer) {
+        this.listeners.forEach(consumer);
     }
 
 }

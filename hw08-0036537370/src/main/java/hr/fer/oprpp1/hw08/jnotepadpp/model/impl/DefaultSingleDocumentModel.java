@@ -1,5 +1,6 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.model.impl;
 
+import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class DefaultSingleDocumentModel implements SingleDocumentModel {
 
@@ -62,6 +64,8 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
     @Override
     public void setFilePath(Path path) {
         this.filePath = path;
+
+        this.notifyListeners(listener -> listener.documentFilePathUpdated(this));
     }
 
     @Override
@@ -73,7 +77,8 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
     public void setModified(boolean modified) {
         if (this.modified != modified) {
             this.modified = modified;
-            this.notifyListeners();
+
+            this.notifyListeners(listener -> listener.documentModifyStatusUpdated(this));
         }
     }
 
@@ -99,10 +104,8 @@ public class DefaultSingleDocumentModel implements SingleDocumentModel {
         return textComponent.getText().replaceAll("\\s", "").length();
     }
 
-    private void notifyListeners() {
-        for (SingleDocumentListener listener : this.listeners) {
-            listener.documentModifyStatusUpdated(this);
-        }
+    private void notifyListeners(Consumer<SingleDocumentListener> consumer) {
+        this.listeners.forEach(consumer);
     }
 
 }
