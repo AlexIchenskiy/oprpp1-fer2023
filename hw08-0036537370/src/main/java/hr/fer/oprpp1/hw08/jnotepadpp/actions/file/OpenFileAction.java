@@ -9,8 +9,19 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.nio.file.Path;
 
+/**
+ * Action for opening file.
+ */
 public class OpenFileAction extends JNotepadAction {
 
+    /**
+     * Creates a single action instance.
+     * @param model Logic model
+     * @param key Keyboard key ("control S", for example)
+     * @param keyEvent Key event for mnemonic usage
+     * @param nameKey Localization string key
+     * @param provider Localization provider
+     */
     public OpenFileAction(MultipleDocumentModel model, String key, int keyEvent,
                            String nameKey, ILocalizationProvider provider) {
         super(model, key, keyEvent, nameKey, provider);

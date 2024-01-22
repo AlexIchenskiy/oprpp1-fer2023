@@ -37,20 +37,44 @@ import java.util.TreeMap;
  */
 public class JNotepadPP extends JFrame {
 
+    /**
+     * Notepad logic model for multiple document handling.
+     */
     private final DefaultMultipleDocumentModel multipleDocumentModel;
 
+    /**
+     * Map of actions like (title, list of actions/map of actions for submenu).
+     */
     private Map<String, Object> actions = new TreeMap<>();
 
+    /**
+     * Actions for case changing.
+     */
     private List<TextAction> changeCaseActions = new ArrayList<>();
 
+    /**
+     * Actions from the Unique menu.
+     */
     private List<TextAction> uniqueActions = new ArrayList<>();
 
+    /**
+     * Sorting actions.
+     */
     private List<TextAction> sortActions = new ArrayList<>();
 
+    /**
+     * App title.
+     */
     private final String title = "JNotepad++";
 
+    /**
+     * Notepad statusbar.
+     */
     private JNotepadStatusbar statusbar;
 
+    /**
+     * Localization provider.
+     */
     private final FormLocalizationProvider provider;
 
     /**
@@ -83,6 +107,9 @@ public class JNotepadPP extends JFrame {
         });
     }
 
+    /**
+     * Function for actions initialization.
+     */
     private void initActions() {
         this.actions = new TreeMap<>();
         this.changeCaseActions = new ArrayList<>();
@@ -154,6 +181,9 @@ public class JNotepadPP extends JFrame {
         ));
     }
 
+    /**
+     * Function for GUI initialization.
+     */
     private void initGUI() {
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.setLocation(0, 0);
@@ -172,10 +202,16 @@ public class JNotepadPP extends JFrame {
         this.getContentPane().add(statusbar, BorderLayout.PAGE_END);
     }
 
+    /**
+     * Function for listener initialization.
+     */
     private void initListeners() {
         this.multipleDocumentModel.addMultipleDocumentListener(new MultipleDocumentListenerImpl(this));
     }
 
+    /**
+     * Function for handling notepad close.
+     */
     private void handleClose() {
         while (true) {
             SingleDocumentModel model = this.multipleDocumentModel.getCurrentDocument();
@@ -215,31 +251,59 @@ public class JNotepadPP extends JFrame {
         }
     }
 
+    /**
+     * Getter for the notepad title.
+     * @return Notepad title
+     */
     @Override
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Getter for the statusbar
+     * @return Statusbar
+     */
     public JNotepadStatusbar getStatusbar() {
         return statusbar;
     }
 
+    /**
+     * Getter for the case changing actions.
+     * @return Case changing actions
+     */
     public List<TextAction> getChangeCaseActions() {
         return changeCaseActions;
     }
 
+    /**
+     * Getter for the unique actions.
+     * @return Unique actions
+     */
     public List<TextAction> getUniqueActions() {
         return uniqueActions;
     }
 
+    /**
+     * Getter for the sort actions.
+     * @return Sort actions
+     */
     public List<TextAction> getSortActions() {
         return sortActions;
     }
 
+    /**
+     * Getter for the notepad multiple document logic model.
+     * @return Multiple document logic model
+     */
     public DefaultMultipleDocumentModel getMultipleDocumentModel() {
         return multipleDocumentModel;
     }
 
+    /**
+     * Main app for the notepad start.
+     * @param args No arguments needed
+     */
     public static void main(String[] args) {
         System.setProperty("file.encoding", "UTF-8");
         SwingUtilities.invokeLater(() -> new JNotepadPP().setVisible(true));

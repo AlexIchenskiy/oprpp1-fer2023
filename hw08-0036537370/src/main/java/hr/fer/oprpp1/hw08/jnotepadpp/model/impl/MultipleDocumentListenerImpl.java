@@ -4,14 +4,27 @@ import hr.fer.oprpp1.hw08.jnotepadpp.JNotepadPP;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 
+/**
+ * Multiple document model logic listener implementation.
+ */
 public class MultipleDocumentListenerImpl implements MultipleDocumentListener {
 
+    /**
+     * Parent component frame.
+     */
     private final JNotepadPP frame;
 
+    /**
+     * Creates a listener with a parent frame.
+     * @param frame A parent frame
+     */
     public MultipleDocumentListenerImpl(JNotepadPP frame) {
         this.frame = frame;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void currentDocumentChanged(SingleDocumentModel previousModel, SingleDocumentModel currentModel) {
         String title = "";
@@ -52,14 +65,16 @@ public class MultipleDocumentListenerImpl implements MultipleDocumentListener {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void documentAdded(SingleDocumentModel model) {
+    public void documentAdded(SingleDocumentModel model) {}
 
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void documentRemoved(SingleDocumentModel model) {
-
-    }
+    public void documentRemoved(SingleDocumentModel model) {}
 
 }

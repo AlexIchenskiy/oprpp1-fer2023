@@ -4,10 +4,21 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Form localization provider.
+ */
 public class FormLocalizationProvider extends LocalizationProviderBridge {
 
+    /**
+     * Localization provider.
+     */
     private final LocalizationProvider provider;
 
+    /**
+     * Instantiates a form localization provider.
+     * @param provider Localization provider
+     * @param frame The frame to add localization listeners to
+     */
     public FormLocalizationProvider(LocalizationProvider provider, JFrame frame) {
         super(provider);
 
@@ -40,6 +51,10 @@ public class FormLocalizationProvider extends LocalizationProviderBridge {
         });
     }
 
+    /**
+     * Localization provider getter.
+     * @return Localization provider
+     */
     public LocalizationProvider getProvider() {
         return provider;
     }

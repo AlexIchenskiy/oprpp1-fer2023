@@ -2,8 +2,14 @@ package hr.fer.oprpp1.hw08.jnotepadpp.components;
 
 import javax.swing.*;
 
+/**
+ * Basic swing JMeni with added localization name key.
+ */
 public class JNotepadSingleMenu extends JMenu {
 
+    /**
+     * Localization name key.
+     */
     private final String nameKey;
 
     /**
@@ -18,6 +24,10 @@ public class JNotepadSingleMenu extends JMenu {
         this.nameKey = nameKey;
     }
 
+    /**
+     * Getter for the name key.
+     * @return Localization name key
+     */
     public String getNameKey() {
         return nameKey;
     }

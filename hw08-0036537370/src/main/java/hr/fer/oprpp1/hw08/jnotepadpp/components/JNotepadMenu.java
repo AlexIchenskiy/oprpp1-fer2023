@@ -7,12 +7,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Notepad menu bar.
+ */
 public class JNotepadMenu extends JMenuBar {
 
+    /**
+     * List of references to all the menus, used for localization.
+     */
     private final List<JNotepadSingleMenu> menus = new ArrayList<>();
 
+    /**
+     * Localization provider.
+     */
     private final ILocalizationProvider provider;
 
+    /**
+     * Creates a notepad menu bar with provided action
+     * @param actions Map of menus and submenus of actions (title, list of actions/map for submenu)
+     * @param provider
+     */
     public JNotepadMenu(Map<String, Object> actions, ILocalizationProvider provider) {
         this.provider = provider;
         this.provider.addLocalizationListener(this::handleLanguageChange);
@@ -47,6 +61,9 @@ public class JNotepadMenu extends JMenuBar {
         }
     }
 
+    /**
+     * Function for handling the language change.
+     */
     private void handleLanguageChange() {
         this.menus.forEach(menu -> menu.setText(provider.getString(menu.getNameKey())));
     }

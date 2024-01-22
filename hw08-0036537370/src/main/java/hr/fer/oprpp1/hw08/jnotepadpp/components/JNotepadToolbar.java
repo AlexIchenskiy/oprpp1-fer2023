@@ -4,10 +4,13 @@ import javax.swing.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Notepad toolbar.
+ */
 public class JNotepadToolbar extends JToolBar {
 
     /**
-     * Creates a new tool bar; orientation defaults to <code>HORIZONTAL</code>.
+     * Creates a new toolbar; orientation defaults to <code>HORIZONTAL</code>.
      */
     public JNotepadToolbar(Map<String, Object> actions) {
         this.setFloatable(true);
@@ -22,6 +25,10 @@ public class JNotepadToolbar extends JToolBar {
         }
     }
 
+    /**
+     * Function for single section initialization.
+     * @param actions Map of actions and other maps (aka submenus) that are flattened into single toolbar
+     */
     private void initSection(Object actions) {
         List<Object> actionList = (List<Object>) actions;
 
@@ -37,4 +44,5 @@ public class JNotepadToolbar extends JToolBar {
             }
         }
     }
+
 }

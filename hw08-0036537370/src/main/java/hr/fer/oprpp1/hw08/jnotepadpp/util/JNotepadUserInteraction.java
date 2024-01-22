@@ -4,8 +4,17 @@ import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 
 import javax.swing.*;
 
+/**
+ * Class representing some notepad dialog windows for interaction with user.
+ */
 public class JNotepadUserInteraction {
 
+    /**
+     * Yes/No window on warning level.
+     * @param messageKey Message localization key
+     * @param provider Localization provider
+     * @return Selected value
+     */
     public static int warningConfirmationWindow(String messageKey, ILocalizationProvider provider) {
         return JOptionPane.showConfirmDialog(
                 null,
@@ -16,6 +25,14 @@ public class JNotepadUserInteraction {
         );
     }
 
+    /**
+     * Yes/No/Cancel window on warning level.
+     * @param messageKey Message localization key
+     * @param options Dialog options (Yes/No/Cancel respectively)
+     * @param provider Localization provider
+     * @param postfix Message postfix
+     * @return Selected value
+     */
     public static int optionConfirmationWindow(String messageKey, String[] options, ILocalizationProvider provider,
                                                String postfix) {
         String[] optionsText = new String[options.length];
@@ -34,6 +51,15 @@ public class JNotepadUserInteraction {
         );
     }
 
+    /**
+     * Window for showing the file stats.
+     * @param messageKey Message localization key
+     * @param provider Localization provider
+     * @param document Document name
+     * @param allChars Number of all chars
+     * @param allNonEmptyChars Number of all non-empty chars
+     * @param lines Number of lines
+     */
     public static void infoWindow(String messageKey, ILocalizationProvider provider, String document, int allChars,
                                   int allNonEmptyChars, int lines) {
         JOptionPane.showMessageDialog(

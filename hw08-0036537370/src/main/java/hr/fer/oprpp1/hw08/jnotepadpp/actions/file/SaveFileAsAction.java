@@ -12,8 +12,19 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Locale;
 
+/**
+ * Action for saving file as.
+ */
 public class SaveFileAsAction extends JNotepadAction {
 
+    /**
+     * Creates a single action instance.
+     * @param model Logic model
+     * @param key Keyboard key ("control S", for example)
+     * @param keyEvent Key event for mnemonic usage
+     * @param nameKey Localization string key
+     * @param provider Localization provider
+     */
     public SaveFileAsAction(MultipleDocumentModel model, String key, int keyEvent,
                            String nameKey, ILocalizationProvider provider) {
         super(model, key, keyEvent, nameKey, provider);
@@ -29,6 +40,13 @@ public class SaveFileAsAction extends JNotepadAction {
         SaveFileAsAction.saveAsAction(this.model, model.getCurrentDocument(), this.provider);
     }
 
+    /**
+     * Static method for saving file as.
+     * @param model Logic model
+     * @param current Current document
+     * @param provider Localization provider
+     * @return Whether the file was saved
+     */
     public static boolean saveAsAction(MultipleDocumentModel model, SingleDocumentModel current,
                                        ILocalizationProvider provider) {
         if (current != null) {

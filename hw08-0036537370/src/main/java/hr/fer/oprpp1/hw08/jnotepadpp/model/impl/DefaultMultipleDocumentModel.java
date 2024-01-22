@@ -13,7 +13,6 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.Utilities;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,20 +22,44 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * Multiple document logic model implementation.
+ */
 public class DefaultMultipleDocumentModel extends JTabbedPane implements MultipleDocumentModel {
 
+    /**
+     * List of documents.
+     */
     private final List<SingleDocumentModel> documents;
 
+    /**
+     * Current document.
+     */
     private SingleDocumentModel document;
 
+    /**
+     * Listeners.
+     */
     private final List<MultipleDocumentListener> listeners;
 
+    /**
+     * Icon for unsaved file.
+     */
     private final ImageIcon redSaveIcon;
 
+    /**
+     * Icon for saved/unmodified file.
+     */
     private final ImageIcon greenSaveIcon;
 
+    /**
+     * Reference to the parent notepad.
+     */
     private final JNotepadPP notepad;
 
+    /**
+     * Boolean representing whether the user selected some text data.
+     */
     private boolean isSelected = false;
 
     /**
@@ -78,11 +101,17 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         });
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public JComponent getVisualComponent() {
         return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleDocumentModel createNewDocument() {
         SingleDocumentModel model = new DefaultSingleDocumentModel(null, "", this.notepad);
@@ -103,11 +132,17 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         return model;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleDocumentModel getCurrentDocument() {
         return this.document;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleDocumentModel loadDocument(Path path) {
         SingleDocumentModel existingModel = findForPath(path);
@@ -147,6 +182,9 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void saveDocument(SingleDocumentModel model, Path newPath) {
         try {
@@ -169,6 +207,9 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void closeDocument(SingleDocumentModel model) {
         if (model == null) {
@@ -186,38 +227,52 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         this.notifyListeners(listener -> listener.currentDocumentChanged(model, this.getCurrentDocument()));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void addMultipleDocumentListener(MultipleDocumentListener l) {
         this.listeners.add(Objects.requireNonNull(l, "Listener cant be null!"));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void removeMultipleDocumentListener(MultipleDocumentListener l) {
         this.listeners.remove(Objects.requireNonNull(l, "Listener cant be null!"));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public int getNumberOfDocuments() {
         return this.documents.size();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleDocumentModel getDocument(int index) {
         return this.documents.get(index);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public SingleDocumentModel findForPath(Path path) {
         return null;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public int getIndexOfDocument(SingleDocumentModel doc) {
         return this.documents.indexOf(Objects.requireNonNull(doc, "Document cant be null!"));
-    }
-
-    public boolean isSelected() {
-        return isSelected;
     }
 
     /**
@@ -232,6 +287,9 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 
     private SingleDocumentListener initDocumentListener() {
         return new SingleDocumentListener() {
+            /**
+             * @inheritDoc
+             */
             @Override
             public void documentModifyStatusUpdated(SingleDocumentModel model) {
                 int index = documents.indexOf(model);
@@ -242,6 +300,9 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
                 }
             }
 
+            /**
+             * @inheritDoc
+             */
             @Override
             public void documentFilePathUpdated(SingleDocumentModel model) {
                 int index = documents.indexOf(model);
@@ -253,6 +314,11 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         };
     }
 
+    /**
+     * Function for handling the user caret change.
+     * @param dot Caret dot
+     * @param mark Caret mark
+     */
     private void handleCaretChange(int dot, int mark) {
         JTextComponent textComponent = this.document.getTextComponent();
         try {
@@ -278,6 +344,10 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         this.isSelected = selection > 0;
     }
 
+    /**
+     * Notify all existing listeners.
+     * @param consumer Function for the listener notifying
+     */
     private void notifyListeners(Consumer<MultipleDocumentListener> consumer) {
         this.listeners.forEach(consumer);
     }
