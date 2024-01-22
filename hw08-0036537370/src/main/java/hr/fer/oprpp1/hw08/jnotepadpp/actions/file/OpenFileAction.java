@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.actions.file;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.JNotepadAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 
 import javax.swing.*;
@@ -10,10 +11,9 @@ import java.nio.file.Path;
 
 public class OpenFileAction extends JNotepadAction {
 
-    public OpenFileAction(MultipleDocumentModel model, String key, int keyEvent) {
-        super(model, key, keyEvent);
-
-        this.putValue(NAME, "Open file");
+    public OpenFileAction(MultipleDocumentModel model, String key, int keyEvent,
+                           String nameKey, ILocalizationProvider provider) {
+        super(model, key, keyEvent, nameKey, provider);
     }
 
     /**

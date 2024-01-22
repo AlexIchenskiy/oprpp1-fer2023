@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.actions.file;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.JNotepadAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 
@@ -8,10 +9,9 @@ import java.awt.event.ActionEvent;
 
 public class SaveFileAction extends JNotepadAction {
 
-    public SaveFileAction(MultipleDocumentModel model, String key, int keyEvent) {
-        super(model, key, keyEvent);
-
-        this.putValue(NAME, "Save file");
+    public SaveFileAction(MultipleDocumentModel model, String key, int keyEvent,
+                           String nameKey, ILocalizationProvider provider) {
+        super(model, key, keyEvent, nameKey, provider);
     }
 
     /**
@@ -28,7 +28,7 @@ public class SaveFileAction extends JNotepadAction {
             return;
         }
 
-        SaveFileAsAction.saveAsAction(this.model, current);
+        SaveFileAsAction.saveAsAction(this.model, current, this.provider);
     }
 
 }

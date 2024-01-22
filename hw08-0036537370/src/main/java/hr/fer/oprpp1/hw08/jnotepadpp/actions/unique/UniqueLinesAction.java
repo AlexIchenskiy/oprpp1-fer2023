@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.actions.unique;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.TextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 
 import javax.swing.text.JTextComponent;
@@ -14,10 +15,10 @@ public class UniqueLinesAction extends TextAction {
 
     private JTextComponent textComponent;
 
-    public UniqueLinesAction(MultipleDocumentModel model, String key, int keyEvent) {
-        super(model, key, keyEvent);
-
-        this.putValue(NAME, "Unique lines");
+    public UniqueLinesAction(MultipleDocumentModel model, String key, int keyEvent, String nameKey,
+                             ILocalizationProvider provider, JTextComponent textComponent) {
+        super(model, key, keyEvent, nameKey, provider);
+        this.textComponent = textComponent;
     }
 
     /**

@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.changecase;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.TextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 
 import javax.swing.text.JTextComponent;
@@ -10,12 +11,10 @@ public class UppercaseAction extends TextAction {
 
     private JTextComponent textComponent;
 
-    public UppercaseAction(MultipleDocumentModel model, String key, int keyEvent, JTextComponent textComponent) {
-        super(model, key, keyEvent);
-
+    public UppercaseAction(MultipleDocumentModel model, String key, int keyEvent, String nameKey,
+                             ILocalizationProvider provider, JTextComponent textComponent) {
+        super(model, key, keyEvent, nameKey, provider);
         this.textComponent = textComponent;
-
-        this.putValue(NAME, "To uppercase");
     }
 
     /**

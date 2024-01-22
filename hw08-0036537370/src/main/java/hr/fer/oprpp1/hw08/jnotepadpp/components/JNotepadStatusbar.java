@@ -1,5 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.components;
 
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
+
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -15,15 +17,25 @@ public class JNotepadStatusbar extends JToolBar {
 
     private final JLabel selectionLabel = new JLabel("Selection: 0");
 
+    private int length = 0;
+    private int line = 1;
+    private int column = 1;
+    private int selection = 0;
+
     private final JLabel timeLabel = new JLabel();
+
+    private final ILocalizationProvider provider;
 
     /**
      * Creates a new tool bar; orientation defaults to <code>HORIZONTAL</code>.
      */
-    public JNotepadStatusbar() {
+    public JNotepadStatusbar(ILocalizationProvider provider) {
         this.setFloatable(true);
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
+
+        this.provider = provider;
+        this.provider.addLocalizationListener(this::handleLanguageChange);
 
         this.initGUI();
         this.initTimer();
@@ -64,19 +76,30 @@ public class JNotepadStatusbar extends JToolBar {
     }
 
     public void setLength(int length) {
-        this.lengthLabel.setText("Length: " + length);
+        this.length = length;
+        this.lengthLabel.setText(this.provider.getString("length") + ": " + length);
     }
 
     public void setLine(int line) {
-        this.lineLabel.setText("Ln: " + line);
+        this.line = line;
+        this.lineLabel.setText(this.provider.getString("line") + ": " + line);
     }
 
     public void setColumn(int column) {
-        this.columnLabel.setText("Col: " + column);
+        this.column = column;
+        this.columnLabel.setText(this.provider.getString("column") + ": " + column);
     }
 
     public void setSelection(int selection) {
-        this.selectionLabel.setText("Selection: " + selection);
+        this.selection = selection;
+        this.selectionLabel.setText(this.provider.getString("selection") + ": " + selection);
+    }
+
+    private void handleLanguageChange() {
+        this.setLength(this.length);
+        this.setLine(this.line);
+        this.setColumn(this.column);
+        this.setSelection(this.selection);
     }
 
 }

@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.actions.sort;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.TextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 
 import javax.swing.text.JTextComponent;
@@ -16,12 +17,11 @@ public class SortAction extends TextAction {
 
     private JTextComponent textComponent;
 
-    public SortAction(MultipleDocumentModel model, String key, int keyEvent, String name, boolean ascending) {
-        super(model, key, keyEvent);
+    public SortAction(MultipleDocumentModel model, String key, int keyEvent,
+                      String nameKey, ILocalizationProvider provider, boolean ascending) {
+        super(model, key, keyEvent, nameKey, provider);
 
         this.ascending = ascending;
-
-        this.putValue(NAME, name);
     }
 
     /**

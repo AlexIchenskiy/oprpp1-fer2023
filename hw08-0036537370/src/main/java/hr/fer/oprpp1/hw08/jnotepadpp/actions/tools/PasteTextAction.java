@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.hw08.jnotepadpp.actions.tools;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.actions.JNotepadAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationProvider;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 
 import javax.swing.*;
@@ -9,10 +10,9 @@ import java.awt.event.ActionEvent;
 
 public class PasteTextAction extends JNotepadAction {
 
-    public PasteTextAction(MultipleDocumentModel model, String key, int keyEvent) {
-        super(model, key, keyEvent);
-
-        this.putValue(NAME, "Paste text");
+    public PasteTextAction(MultipleDocumentModel model, String key, int keyEvent,
+                          String nameKey, ILocalizationProvider provider) {
+        super(model, key, keyEvent, nameKey, provider);
     }
 
     /**
