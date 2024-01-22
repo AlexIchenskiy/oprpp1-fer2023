@@ -30,6 +30,26 @@ public class MultipleDocumentListenerImpl implements MultipleDocumentListener {
         this.frame.getStatusbar().setLength(
                 currentModel == null ? 0 : currentModel.getTextComponent().getText().length()
         );
+
+        if (this.frame.getMultipleDocumentModel().getCurrentDocument() != null) {
+            this.frame.getChangeCaseActions().forEach(action -> action.setTextComponent(
+                    this.frame.getMultipleDocumentModel().getCurrentDocument().getTextComponent())
+            );
+
+            this.frame.getUniqueActions().forEach(action -> action.setTextComponent(
+                    this.frame.getMultipleDocumentModel().getCurrentDocument().getTextComponent())
+            );
+
+            this.frame.getSortActions().forEach(action -> action.setTextComponent(
+                    this.frame.getMultipleDocumentModel().getCurrentDocument().getTextComponent())
+            );
+        } else {
+            this.frame.getChangeCaseActions().forEach(action -> action.setTextComponent(null));
+
+            this.frame.getUniqueActions().forEach(action -> action.setTextComponent(null));
+
+            this.frame.getSortActions().forEach(action -> action.setTextComponent(null));
+        }
     }
 
     @Override

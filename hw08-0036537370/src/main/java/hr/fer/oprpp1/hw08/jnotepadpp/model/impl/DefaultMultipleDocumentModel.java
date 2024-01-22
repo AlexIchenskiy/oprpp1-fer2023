@@ -7,7 +7,6 @@ import hr.fer.oprpp1.hw08.jnotepadpp.model.MultipleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.model.SingleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.util.JNotepadIcon;
-import jdk.jshell.execution.Util;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -37,6 +36,8 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
     private final ImageIcon greenSaveIcon;
 
     private final JNotepadPP notepad;
+
+    private boolean isSelected = false;
 
     /**
      * Creates an empty <code>TabbedPane</code> with a default
@@ -215,6 +216,10 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
         return this.documents.indexOf(Objects.requireNonNull(doc, "Document cant be null!"));
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
     /**
      * Returns an iterator over elements of type {@code T}.
      *
@@ -265,7 +270,12 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
             this.notepad.getStatusbar().setLine(1);
             this.notepad.getStatusbar().setColumn(1);
         }
-        this.notepad.getStatusbar().setSelection(Math.abs(mark - dot));
+        int selection = Math.abs(mark - dot);
+        this.notepad.getStatusbar().setSelection(selection);
+
+        this.notepad.getChangeCaseActions().forEach((action) -> action.setEnabled(selection > 0));
+
+        this.isSelected = selection > 0;
     }
 
     private void notifyListeners(Consumer<MultipleDocumentListener> consumer) {

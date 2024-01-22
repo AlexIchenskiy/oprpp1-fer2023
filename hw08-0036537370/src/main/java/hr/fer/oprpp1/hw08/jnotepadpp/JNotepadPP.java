@@ -1,6 +1,16 @@
 package hr.fer.oprpp1.hw08.jnotepadpp;
 
-import hr.fer.oprpp1.hw08.jnotepadpp.actions.*;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.file.*;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.sort.SortAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.CopyTextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.CutTextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.PasteTextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.StatisticsAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.TextAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.changecase.InvertcaseAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.changecase.LowercaseAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.tools.changecase.UppercaseAction;
+import hr.fer.oprpp1.hw08.jnotepadpp.actions.unique.UniqueLinesAction;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadMenu;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadStatusbar;
 import hr.fer.oprpp1.hw08.jnotepadpp.components.JNotepadToolbar;
@@ -14,6 +24,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +36,13 @@ public class JNotepadPP extends JFrame {
 
     private final DefaultMultipleDocumentModel multipleDocumentModel;
 
-    private final Map<String, List<Action>> actions = new TreeMap<>();
+    private final Map<String, Object> actions = new TreeMap<>();
+
+    private final List<TextAction> changeCaseActions = new ArrayList<>();
+
+    private final List<TextAction> uniqueActions = new ArrayList<>();
+
+    private final List<TextAction> sortActions = new ArrayList<>();
 
     private final String title = "JNotepad++";
 
@@ -60,6 +77,9 @@ public class JNotepadPP extends JFrame {
     }
 
     private void initActions() {
+        JTextArea textArea = this.multipleDocumentModel.getCurrentDocument() == null ?
+                null : this.multipleDocumentModel.getCurrentDocument().getTextComponent();
+
         this.actions.put("File", List.of(
                 new CreateFileAction(this.multipleDocumentModel, "control N", KeyEvent.VK_N),
                 new OpenFileAction(this.multipleDocumentModel, "control O", KeyEvent.VK_O),
@@ -68,12 +88,34 @@ public class JNotepadPP extends JFrame {
                 new CloseFileAction(this.multipleDocumentModel, "control W", KeyEvent.VK_W)
         ));
 
+        this.changeCaseActions.addAll(List.of(
+                new UppercaseAction(this.multipleDocumentModel, "control U", KeyEvent.VK_U, textArea),
+                new LowercaseAction(this.multipleDocumentModel, "control L", KeyEvent.VK_L, textArea),
+                new InvertcaseAction(this.multipleDocumentModel, "control K", KeyEvent.VK_K, textArea)
+        ));
+
         this.actions.put("Tools", List.of(
                 new CopyTextAction(this.multipleDocumentModel, "control C", KeyEvent.VK_C),
                 new PasteTextAction(this.multipleDocumentModel, "control V", KeyEvent.VK_V),
                 new CutTextAction(this.multipleDocumentModel, "control X", KeyEvent.VK_X),
-                new StatisticsAction(this.multipleDocumentModel, "control I", KeyEvent.VK_I)
+                new StatisticsAction(this.multipleDocumentModel, "control I", KeyEvent.VK_I),
+                Map.of("Change case", this.changeCaseActions)
         ));
+
+        uniqueActions.addAll(List.of(
+                new UniqueLinesAction(this.multipleDocumentModel, "control P", KeyEvent.VK_P)
+        ));
+
+        this.actions.put("Unique", uniqueActions);
+
+        sortActions.addAll(List.of(
+                new SortAction(this.multipleDocumentModel, "control N",
+                        KeyEvent.VK_N, "Lines ascending", true),
+                new SortAction(this.multipleDocumentModel, "control M",
+                        KeyEvent.VK_N, "Lines descending", false)
+        ));
+
+        this.actions.put("Sort", sortActions);
     }
 
     private void initGUI() {
@@ -141,6 +183,22 @@ public class JNotepadPP extends JFrame {
 
     public JNotepadStatusbar getStatusbar() {
         return statusbar;
+    }
+
+    public List<TextAction> getChangeCaseActions() {
+        return changeCaseActions;
+    }
+
+    public List<TextAction> getUniqueActions() {
+        return uniqueActions;
+    }
+
+    public List<TextAction> getSortActions() {
+        return sortActions;
+    }
+
+    public DefaultMultipleDocumentModel getMultipleDocumentModel() {
+        return multipleDocumentModel;
     }
 
     public static void main(String[] args) {

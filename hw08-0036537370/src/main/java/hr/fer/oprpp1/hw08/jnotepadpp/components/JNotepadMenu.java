@@ -6,19 +6,29 @@ import java.util.Map;
 
 public class JNotepadMenu extends JMenuBar {
 
-    public JNotepadMenu(Map<String, List<Action>> actions) {
-        for (Map.Entry<String, List<Action>> entry : actions.entrySet()) {
-            this.initMenu(entry.getKey(), entry.getValue());
-        }
-    }
+    public JNotepadMenu(Map<String, Object> actions) {
+        for (Map.Entry<String, Object> entry : actions.entrySet()) {
+            JMenu menu = new JMenu(entry.getKey());
+            List<Object> menuContent = (List<Object>)entry.getValue();
 
-    private void initMenu(String title, List<Action> actions) {
-        JMenu menu = new JMenu(title);
+            for (Object action : menuContent) {
+                if (action instanceof Action) {
+                    menu.add((Action)action);
+                } else if (action instanceof Map) {
+                    Map<String, List<Action>> map = (Map<String, List<Action>>) action;
 
-        this.add(menu);
+                    for (Map.Entry<String, List<Action>> entry1 : map.entrySet()) {
+                        JMenu subMenu = new JMenu(entry1.getKey());
+                        for (Action actionItem : entry1.getValue()) {
+                            subMenu.add(actionItem);
+                        }
 
-        for (Action action : actions) {
-            menu.add(action);
+                        menu.add(subMenu);
+                    }
+                }
+            }
+
+            this.add(menu);
         }
     }
 
